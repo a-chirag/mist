@@ -21,6 +21,17 @@ def translate_text(text):
         return text
     return translator.translate(text, dest=st.session_state['language']).text
 
+# Function to translate texts
+def translate_texts(texts):
+    """Translate multiple texts to the selected language and split."""
+    if 'language' not in st.session_state or st.session_state['language'] == 'en':
+        return texts
+    # Join the texts with a separator; consider using a unique string (e.g., newline) unlikely to appear in the actual text
+    joined_text = "\n".join(texts)
+    # Translate the combined text
+    translated = translator.translate(joined_text, dest=st.session_state['language']).text
+    # Split the translated text back into individual pieces
+    return translated.split("\n")
 
 # Define default language state
 if 'language' not in st.session_state:
@@ -97,14 +108,15 @@ with placeholder.container():
         This privacy policy was last updated on August 17, 2023.
         """)
         
-        st.markdown("###### Consent")
-        st.radio("**Do you consent to participating in this study and sharing anonymized information?**", ["","Yes, I consent", "No, I do not consent"], key = "consent",label_visibility="visible", horizontal=True)
-        agree = st.session_state.consent == "Yes, I consent" 
-        disagree = st.session_state.consent == "No, I do not consent" 
         # Language Selector
         language_choice = st.selectbox("Select Language", ["English", "Español", "Français", "Deutsch","Hindi"])
         language_map = {"English": "en", "Español": "es", "Français": "fr", "Deutsch": "de","Hindi": "hi"}
         st.session_state['language'] = language_map[language_choice]
+
+        st.markdown("###### Consent")
+        st.radio("**Do you consent to participating in this study and sharing anonymized information?**", ["","Yes, I consent", "No, I do not consent"], key = "consent",label_visibility="visible", horizontal=True)
+        agree = st.session_state.consent == "Yes, I consent" 
+        disagree = st.session_state.consent == "No, I do not consent" 
       
 if agree:
     placeholder.empty()
@@ -172,28 +184,30 @@ st.session_state.disable16 = True
 if (agree or disagree):
     if st.session_state.which_mist == "MIST-20":
         
-        st.session_state.mist_items = [
-    translate_text("Government Officials Have Manipulated Stock Prices to Hide Scandals"),
-    translate_text("The Corporate Media Is Controlled by the Military-Industrial Complex: The Major Oil Companies Own the Media and Control Their Agenda"),
-    translate_text("New Study: Left-Wingers Are More Likely to Lie to Get a Higher Salary"),
-    translate_text("The Government Is Manipulating the Public's Perception of Genetic Engineering in Order to Make People More Accepting of Such Techniques"),
-    translate_text("Left-Wing Extremism Causes 'More Damage' to World Than Terrorism, Says UN Report"),
-    translate_text("Certain Vaccines Are Loaded with Dangerous Chemicals and Toxins"),
-    translate_text("New Study: Clear Relationship Between Eye Color and Intelligence"),
-    translate_text("The Government Is Knowingly Spreading Disease Through the Airwaves and Food Supply"),
-    translate_text("Ebola Virus 'Caused by US Nuclear Weapons Testing', New Study Says"),
-    translate_text("Government Officials Have Illegally Manipulated the Weather to Cause Devastating Storms"),
-    translate_text("Attitudes Toward EU Are Largely Positive, Both Within Europe and Outside It"),
-    translate_text("One-in-Three Worldwide Lack Confidence in Non-Governmental Organizations"),
-    translate_text("Reflecting a Demographic Shift, 109 US Counties Have Become Majority Nonwhite Since 2000"),
-    translate_text("International Relations Experts and US Public Agree: America Is Less Respected Globally"),
-    translate_text("Hyatt Will Remove Small Bottles from Hotel Bathrooms"),
-    translate_text("Morocco’s King Appoints Committee Chief to Fight Poverty and Inequality"),
-    translate_text("Republicans Divided in Views of Trump’s Conduct, Democrats Are Broadly Critical"),
-    translate_text("Democrats More Supportive than Republicans of Federal Spending for Scientific Research"),
-    translate_text("Global Warming Age Gap: Younger Americans Most Worried"),
-    translate_text("US Support for Legal Marijuana Steady in Past Year")
+        mist_items = [
+            "Government Officials Have Manipulated Stock Prices to Hide Scandals",
+            "The Corporate Media Is Controlled by the Military-Industrial Complex: The Major Oil Companies Own the Media and Control Their Agenda",
+            "New Study: Left-Wingers Are More Likely to Lie to Get a Higher Salary",
+            "The Government Is Manipulating the Public's Perception of Genetic Engineering in Order to Make People More Accepting of Such Techniques",
+            "Left-Wing Extremism Causes 'More Damage' to World Than Terrorism, Says UN Report",
+            "Certain Vaccines Are Loaded with Dangerous Chemicals and Toxins",
+            "New Study: Clear Relationship Between Eye Color and Intelligence",
+            "The Government Is Knowingly Spreading Disease Through the Airwaves and Food Supply",
+            "Ebola Virus 'Caused by US Nuclear Weapons Testing', New Study Says",
+            "Government Officials Have Illegally Manipulated the Weather to Cause Devastating Storms",
+            "Attitudes Toward EU Are Largely Positive, Both Within Europe and Outside It",
+            "One-in-Three Worldwide Lack Confidence in Non-Governmental Organizations",
+            "Reflecting a Demographic Shift, 109 US Counties Have Become Majority Nonwhite Since 2000",
+            "International Relations Experts and US Public Agree: America Is Less Respected Globally",
+            "Hyatt Will Remove Small Bottles from Hotel Bathrooms",
+            "Morocco’s King Appoints Committee Chief to Fight Poverty and Inequality",
+            "Republicans Divided in Views of Trump’s Conduct, Democrats Are Broadly Critical",
+            "Democrats More Supportive than Republicans of Federal Spending for Scientific Research",
+            "Global Warming Age Gap: Younger Americans Most Worried",
+            "US Support for Legal Marijuana Steady in Past Year"
             ]
+        
+        st.session_state.mist_items = translate_texts(mist_items)
         st.session_state.mist_item_labels = ["f1","f2","f3","f4","f5","f6","f7","f8","f9","f10",
                                                 "t1","t2","t3","t4","t5","t6","t7","t8","t9","t10"] 
         st.session_state.labels = ["Fake","Fake","Fake","Fake","Fake","Fake","Fake","Fake","Fake","Fake",
@@ -390,24 +404,26 @@ if (agree or disagree):
     if st.session_state.which_mist == "MIST-16":
         
 
-        st.session_state.mist_items = [
+        mist_items = [
             "The Government Is Knowingly Spreading Disease Through the Airwaves and Food Supply",
             "The Government Is Actively Destroying Evidence Related to the JFK Assassination",
             "Government Officials Have Manipulated Stock Prices to Hide Scandals",
             "A Small Group of People Control the World Economy by Manipulating the Price of Gold and Oil",
             "The Government Is Conducting a Massive Cover-Up of Their Involvement in 9/11",
             "New Study: Left-Wingers Are More Likely to Lie to Get a Higher Salary",
-            "Climate Scientists' Work Is 'Unreliable', a 'Deceptive Method of Communication''",
+            "Climate Scientists' Work Is 'Unreliable', a 'Deceptive Method of Communication'",
             "Left-Wingers Are More Likely to Lie to Get a Good Grade",
-             "Morocco’s King Appoints Committee Chief to Fight Poverty and Inequality",
-             "US Hispanic Population Reached New High in 2018, But Growth Has Slowed",
-             "Hyatt Will Remove Small Bottles from Hotel Bathrooms",
-             "Taiwan Seeks to Join Fight Against Global Warming",
-             "About a Quarter of Large US Newspapers Laid off Staff in 2018",
-             "Majority in US Still Want Abortion Legal, with Limits",
-             "Most Americans Say It’s OK for Professional Athletes to Speak out Publicly about Politics",
-             "United Nations Gets Mostly Positive Marks from People Around the World"
-            ]
+            "Morocco’s King Appoints Committee Chief to Fight Poverty and Inequality",
+            "US Hispanic Population Reached New High in 2018, But Growth Has Slowed",
+            "Hyatt Will Remove Small Bottles from Hotel Bathrooms",
+            "Taiwan Seeks to Join Fight Against Global Warming",
+            "About a Quarter of Large US Newspapers Laid off Staff in 2018",
+            "Majority in US Still Want Abortion Legal, with Limits",
+            "Most Americans Say It’s OK for Professional Athletes to Speak out Publicly about Politics",
+            "United Nations Gets Mostly Positive Marks from People Around the World"
+        ]
+        st.session_state.mist_items = translate_texts(mist_items)
+
         st.session_state.mist_item_labels = ["f1m16","f2m16","f3m16","f4m16","f5m16","f6m16","f7m16","f8m16",
                                                 "t1m16","t2m16","t3m16","t4m16","t5m16","t6m16","t7m16","t8m16"]
         st.session_state.labels = ["Fake","Fake","Fake","Fake","Fake","Fake","Fake","Fake",

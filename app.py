@@ -4,11 +4,27 @@ from datetime import datetime
 from uuid import uuid4
 import numpy as np
 from PIL import Image
+from googletrans import Translator
 
+
+translator = Translator()
 st.set_page_config(
     page_title="Misinformation Susceptibility Test (MIST)",
     page_icon="🧐"
 )
+
+
+# Function to translate text
+def translate_text(text):
+    """Translate text based on selected language."""
+    if st.session_state['language'] == 'en':
+        return text
+    return translator.translate(text, dest=st.session_state['language']).text
+
+
+# Define default language state
+if 'language' not in st.session_state:
+    st.session_state['language'] = 'en'
 
 st.markdown(
     """ <style>
@@ -85,6 +101,10 @@ with placeholder.container():
         st.radio("**Do you consent to participating in this study and sharing anonymized information?**", ["","Yes, I consent", "No, I do not consent"], key = "consent",label_visibility="visible", horizontal=True)
         agree = st.session_state.consent == "Yes, I consent" 
         disagree = st.session_state.consent == "No, I do not consent" 
+        # Language Selector
+        language_choice = st.selectbox("Select Language", ["English", "Español", "Français", "Deutsch","Hindi"])
+        language_map = {"English": "en", "Español": "es", "Français": "fr", "Deutsch": "de","Hindi": "hi"}
+        st.session_state['language'] = language_map[language_choice]
       
 if agree:
     placeholder.empty()
@@ -153,26 +173,26 @@ if (agree or disagree):
     if st.session_state.which_mist == "MIST-20":
         
         st.session_state.mist_items = [
-             "Government Officials Have Manipulated Stock Prices to Hide Scandals",
-             "The Corporate Media Is Controlled by the Military-Industrial Complex: The Major Oil Companies Own the Media and Control Their Agenda",
-             "New Study: Left-Wingers Are More Likely to Lie to Get a Higher Salary",
-             "The Government Is Manipulating the Public's Perception of Genetic Engineering in Order to Make People More Accepting of Such Techniques",
-             "Left-Wing Extremism Causes 'More Damage' to World Than Terrorism, Says UN Report",
-             "Certain Vaccines Are Loaded with Dangerous Chemicals and Toxins",
-             "New Study: Clear Relationship Between Eye Color and Intelligence",
-             "The Government Is Knowingly Spreading Disease Through the Airwaves and Food Supply",
-             "Ebola Virus 'Caused by US Nuclear Weapons Testing', New Study Says",
-             "Government Officials Have Illegally Manipulated the Weather to Cause Devastating Storms",
-             "Attitudes Toward EU Are Largely Positive, Both Within Europe and Outside It",
-             "One-in-Three Worldwide Lack Confidence in Non-Governmental Organizations",
-             "Reflecting a Demographic Shift, 109 US Counties Have Become Majority Nonwhite Since 2000",
-             "International Relations Experts and US Public Agree: America Is Less Respected Globally",
-             "Hyatt Will Remove Small Bottles from Hotel Bathrooms",
-             "Morocco’s King Appoints Committee Chief to Fight Poverty and Inequality",
-             "Republicans Divided in Views of Trump’s Conduct, Democrats Are Broadly Critical",
-             "Democrats More Supportive than Republicans of Federal Spending for Scientific Research",
-             "Global Warming Age Gap: Younger Americans Most Worried",
-             "US Support for Legal Marijuana Steady in Past Year"
+    translate_text("Government Officials Have Manipulated Stock Prices to Hide Scandals"),
+    translate_text("The Corporate Media Is Controlled by the Military-Industrial Complex: The Major Oil Companies Own the Media and Control Their Agenda"),
+    translate_text("New Study: Left-Wingers Are More Likely to Lie to Get a Higher Salary"),
+    translate_text("The Government Is Manipulating the Public's Perception of Genetic Engineering in Order to Make People More Accepting of Such Techniques"),
+    translate_text("Left-Wing Extremism Causes 'More Damage' to World Than Terrorism, Says UN Report"),
+    translate_text("Certain Vaccines Are Loaded with Dangerous Chemicals and Toxins"),
+    translate_text("New Study: Clear Relationship Between Eye Color and Intelligence"),
+    translate_text("The Government Is Knowingly Spreading Disease Through the Airwaves and Food Supply"),
+    translate_text("Ebola Virus 'Caused by US Nuclear Weapons Testing', New Study Says"),
+    translate_text("Government Officials Have Illegally Manipulated the Weather to Cause Devastating Storms"),
+    translate_text("Attitudes Toward EU Are Largely Positive, Both Within Europe and Outside It"),
+    translate_text("One-in-Three Worldwide Lack Confidence in Non-Governmental Organizations"),
+    translate_text("Reflecting a Demographic Shift, 109 US Counties Have Become Majority Nonwhite Since 2000"),
+    translate_text("International Relations Experts and US Public Agree: America Is Less Respected Globally"),
+    translate_text("Hyatt Will Remove Small Bottles from Hotel Bathrooms"),
+    translate_text("Morocco’s King Appoints Committee Chief to Fight Poverty and Inequality"),
+    translate_text("Republicans Divided in Views of Trump’s Conduct, Democrats Are Broadly Critical"),
+    translate_text("Democrats More Supportive than Republicans of Federal Spending for Scientific Research"),
+    translate_text("Global Warming Age Gap: Younger Americans Most Worried"),
+    translate_text("US Support for Legal Marijuana Steady in Past Year")
             ]
         st.session_state.mist_item_labels = ["f1","f2","f3","f4","f5","f6","f7","f8","f9","f10",
                                                 "t1","t2","t3","t4","t5","t6","t7","t8","t9","t10"] 
@@ -576,4 +596,3 @@ if (agree or disagree):
                     collection = db.app
                     collection.insert_one(user_data)
                     st.session_state.inserted16 = True
-
